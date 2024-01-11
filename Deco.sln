@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecoWeb", "DecoWeb\DecoWeb.csproj", "{BD0ACAD8-1A3D-483C-BACE-FB23C360F580}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DecoWeb", "DecoWeb\DecoWeb.csproj", "{BD0ACAD8-1A3D-483C-BACE-FB23C360F580}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deco.DataAccess", "Deco.DataAccess\Deco.DataAccess.csproj", "{5257E198-55C7-4B88-A82A-D51D94D41DC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deco.Models", "Deco.Models\Deco.Models.csproj", "{0F09E557-84B0-49B8-A846-D42ABEE2A74A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deco.Utility", "Deco.Utility\Deco.Utility.csproj", "{6806EE25-569D-420B-B33B-186BA5593DFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{BD0ACAD8-1A3D-483C-BACE-FB23C360F580}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD0ACAD8-1A3D-483C-BACE-FB23C360F580}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD0ACAD8-1A3D-483C-BACE-FB23C360F580}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5257E198-55C7-4B88-A82A-D51D94D41DC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5257E198-55C7-4B88-A82A-D51D94D41DC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5257E198-55C7-4B88-A82A-D51D94D41DC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5257E198-55C7-4B88-A82A-D51D94D41DC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F09E557-84B0-49B8-A846-D42ABEE2A74A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F09E557-84B0-49B8-A846-D42ABEE2A74A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F09E557-84B0-49B8-A846-D42ABEE2A74A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F09E557-84B0-49B8-A846-D42ABEE2A74A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6806EE25-569D-420B-B33B-186BA5593DFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6806EE25-569D-420B-B33B-186BA5593DFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6806EE25-569D-420B-B33B-186BA5593DFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6806EE25-569D-420B-B33B-186BA5593DFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
