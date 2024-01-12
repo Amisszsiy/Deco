@@ -1,0 +1,37 @@
+﻿
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-dark bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">
+                    Hotel List
+                </h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pb-3">
+            <div class="col-6"></div>
+            <div class="col-6 text-end">
+                <a asp-controller="Hotel" asp-action="Upsert" class="btn btn-dark">
+                    <i class="bi bi-plus-square"></i> Add New Hotel
+                </a>
+            </div>
+        </div>
+        <table id="tblData" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Hotel Name</th>
+                    <th>City</th>
+                    <th>Province</th>
+                    <th>Phone Number</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/hotel.js"></script>
+}

@@ -4,6 +4,7 @@ using Deco.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Deco.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240112075248_AddHotelTable")]
+    partial class AddHotelTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,28 +101,6 @@ namespace Deco.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Hotels");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            City = "Burkley",
-                            Name = "Mariatt",
-                            PhoneNumber = "522-488-1245",
-                            PostalCode = "544-765",
-                            Province = "Iowa",
-                            StreetAddress = "19/1 LakeVille South Wesley 5 Rd."
-                        },
-                        new
-                        {
-                            Id = 2,
-                            City = "Weiling",
-                            Name = "Grande",
-                            PhoneNumber = "134-570-5701",
-                            PostalCode = "125-987",
-                            Province = "Toronto",
-                            StreetAddress = "5 SpringFiled GoldenCrown 8 Rd."
-                        });
                 });
 
             modelBuilder.Entity("Deco.Models.Product", b =>
@@ -439,9 +420,6 @@ namespace Deco.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("HotelId")
-                        .HasColumnType("int");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -454,8 +432,6 @@ namespace Deco.DataAccess.Migrations
 
                     b.Property<string>("StreetAddress")
                         .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("HotelId");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
@@ -520,15 +496,6 @@ namespace Deco.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Deco.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("Deco.Models.Hotel", "Hotel")
-                        .WithMany()
-                        .HasForeignKey("HotelId");
-
-                    b.Navigation("Hotel");
                 });
 #pragma warning restore 612, 618
         }

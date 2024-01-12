@@ -14,6 +14,7 @@ namespace Deco.DataAccess.Data
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Hotel> Hotels { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,6 +35,11 @@ namespace Deco.DataAccess.Data
                 new Product { Id = 4, Name = "Bear fur 9*10", Description = "Bear fur carpet 9*10M", Price = 5000.00, SetPrice = 4000.00, CategoryId = 2, ImageUrl = "" },
                 new Product { Id = 5, Name = "Tall White Cab170", Description = "White Cabinet 170*40*70", Price = 6000.00, SetPrice = 5000.00, CategoryId = 3, ImageUrl = "" },
                 new Product { Id = 6, Name = "Short Dark Cab45", Description = "Dark Cabinet 45*40*70", Price = 2000.00, SetPrice = 1000.00, CategoryId = 3, ImageUrl = "" });
+
+            modelBuilder.Entity<Hotel>().HasData(
+                new Hotel { Id = 1, Name = "Mariatt", StreetAddress = "19/1 LakeVille South Wesley 5 Rd.", City = "Burkley", Province = "Iowa", PostalCode = "544-765", PhoneNumber = "522-488-1245" },
+                new Hotel { Id = 2, Name = "Grande", StreetAddress = "5 SpringFiled GoldenCrown 8 Rd.", City = "Weiling", Province = "Toronto", PostalCode = "125-987", PhoneNumber = "134-570-5701" }
+                );
         }
     }
 }

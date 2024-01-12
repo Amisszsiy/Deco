@@ -10,6 +10,7 @@ namespace Deco.DataAccess.Repository.IRepository
     {
         public ICategoryRepository Category { get; }
         public IProductRepository Product { get; }
+        public IHotelRepository Hotel { get; }
         void Save();
     }
 }
