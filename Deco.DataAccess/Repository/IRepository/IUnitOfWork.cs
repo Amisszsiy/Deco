@@ -12,6 +12,7 @@ namespace Deco.DataAccess.Repository.IRepository
         public IProductRepository Product { get; }
         public IHotelRepository Hotel { get; }
         public IShoppingCartRepository ShoppingCart { get; }
+        public IApplicationUserRepository ApplicationUser { get; }
         public IOrderHeaderRepository OrderHeader { get; }
         public IOrderDetailRepository OrderDetail { get; }
         void Save();
