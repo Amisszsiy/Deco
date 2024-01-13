@@ -1,7 +1,9 @@
 using Deco.DataAccess.Repository.IRepository;
 using Deco.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace DecoWeb.Areas.Customer.Controllers
 {
@@ -23,10 +25,43 @@ namespace DecoWeb.Areas.Customer.Controllers
             return View(products);
         }
 
-        public IActionResult ProductDetails(int? productId)
+        public IActionResult ProductDetails(int productId)
         {
-            Product product = _unitOfWork.Product.Get(u=>u.Id == productId, includeProperties: "Category");
-            return View(product);
+            ShoppingCart shoppingCart = new()
+            {
+                Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category"),
+                Count = 1,
+                ProductId = productId
+            };
+            return View(shoppingCart);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult ProductDetails(ShoppingCart shoppingCart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            shoppingCart.ApplicationUserId = userId;
+
+            ShoppingCart cartFromDb = _unitOfWork.ShoppingCart.Get(
+                u => u.ApplicationUserId == userId && u.ProductId == shoppingCart.ProductId);
+
+            if(cartFromDb != null)
+            {
+                cartFromDb.Count += shoppingCart.Count;
+                _unitOfWork.ShoppingCart.Update(cartFromDb);
+            }
+            else
+            {
+                _unitOfWork.ShoppingCart.Add(shoppingCart);
+            }
+
+            _unitOfWork.Save();
+
+            TempData["success"] = "Added to cart!";
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()
