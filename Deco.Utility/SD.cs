@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Deco.Utility
 {
+    //Describing meaning and term of use for each keyword.
     public static class SD
     {
         public const string Role_Customer = "Customer";
