@@ -1,5 +1,6 @@
 using Deco.DataAccess.Repository.IRepository;
 using Deco.Models;
+using Deco.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -51,13 +52,16 @@ namespace DecoWeb.Areas.Customer.Controllers
             {
                 cartFromDb.Count += shoppingCart.Count;
                 _unitOfWork.ShoppingCart.Update(cartFromDb);
+                _unitOfWork.Save();
             }
             else
             {
                 _unitOfWork.ShoppingCart.Add(shoppingCart);
+                _unitOfWork.Save();
+                //Get updated count for session cart when new item type is just added.
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(
+                        u => u.ApplicationUserId == userId).Count());
             }
-
-            _unitOfWork.Save();
 
             TempData["success"] = "Added to cart!";
 

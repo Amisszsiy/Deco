@@ -190,6 +190,8 @@ namespace DecoWeb.Areas.Customer.Controllers
                     _unitOfWork.OrderHeader.UpdateStatus(id, SD.Status_Approved, SD.Payment_Approved);
                     _unitOfWork.Save();
                 }
+
+                HttpContext.Session.Remove(SD.SessionCart);
             }
 
             //After payment succeed, remove items in cart
@@ -211,9 +213,14 @@ namespace DecoWeb.Areas.Customer.Controllers
 
         public IActionResult Decrease(int itemId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == itemId);
-            if(cartFromDb.Count == 1)
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == itemId, tracked: true);
+            //Remove because only have one
+            if(cartFromDb.Count <= 1)
             {
+                //Decrease item in cart count by 1 for session cart  
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(
+                u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
+                //Then remove cart item in DB
                 _unitOfWork.ShoppingCart.Remove(cartFromDb);
             }
             else
@@ -227,9 +234,17 @@ namespace DecoWeb.Areas.Customer.Controllers
 
         public IActionResult Remove(int itemId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == itemId);
+            /**Tracked = true for retriving entity (cartFromDb) 
+             * because it is used somewhere before it interact db again**/
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == itemId, tracked: true);
+
+            //Decrease item in cart count  by 1 for session cart
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(
+                u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
+
             _unitOfWork.ShoppingCart.Remove(cartFromDb);
             _unitOfWork.Save();
+
             return RedirectToAction(nameof(Index));
         }
 

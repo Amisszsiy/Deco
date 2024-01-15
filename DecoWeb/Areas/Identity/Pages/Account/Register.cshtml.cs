@@ -211,7 +211,16 @@ namespace DecoWeb.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        //If admin create user, stay sign-in for admin.
+                        if (User.IsInRole(SD.Role_Admin))
+                        {
+                            TempData["success"] = "New user has been created.";
+                        }
+                        else
+                        {
+                            //Auto sign in for regular user registration.
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                        }
                         return LocalRedirect(returnUrl);
                     }
                 }

@@ -25,5 +25,7 @@ namespace Deco.Utility
         public const string Payment_Approved = "Approved";
 		public const string Payment_DelayedPayment = "Delayed Peyment";
 		public const string Payment_Rejected = "Rejected";
+
+        public const string SessionCart = "SessionShoppingCart";
 	}
 }
