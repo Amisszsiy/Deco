@@ -6,33 +6,30 @@ using Microsoft.AspNetCore.Identity;
 using Deco.Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Stripe;
+using Deco.DataAccess.DbInitializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options=>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 //Set class properties to values in appsetting
 builder.Services.Configure<StripeSetting>(builder.Configuration.GetSection("Stripe"));
-
 builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = $"/Identity/Account/Login";
     options.LogoutPath = $"/Identity/Account/Logout";
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 });
-
 builder.Services.AddAuthentication().AddFacebook(options =>
 {
     //Move to secret vault later
     options.AppId = "1079391060054742";
     options.AppSecret = "b7467640dc93c5b9ba4711390df6ef8e";
 });
-
 //Add session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -41,6 +38,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -66,6 +64,9 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
+
+SeedDatabase();
+
 app.MapRazorPages();
 
 app.MapControllerRoute(
@@ -73,3 +74,12 @@ app.MapControllerRoute(
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize();
+    }
+}
