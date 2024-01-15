@@ -142,7 +142,7 @@ namespace DecoWeb.Areas.Admin.Controllers
             OrderVM.OrderDetails = _unitOfWork.OrderDetail.GetAll(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperties: "Product");
 
             //Add this to appsetting later
-            var domain = "https://localhost:7055/";
+            var domain = Request.Scheme + "://" + Request.Host.Value + "/";
 
             //Create session obj using Stripe API.
             //Configure payment details in its obj.

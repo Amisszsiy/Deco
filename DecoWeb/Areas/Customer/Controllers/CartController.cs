@@ -125,7 +125,7 @@ namespace DecoWeb.Areas.Customer.Controllers
 			if (applicationUser.HotelId.GetValueOrDefault() == 0)
 			{
                 //Add this to appsetting later
-                var domain = "https://localhost:7055/";
+                var domain = Request.Scheme + "://" + Request.Host.Value + "/";
 
                 //Create session obj using Stripe API.
                 //Configure payment details in its obj.
