@@ -30,7 +30,9 @@ namespace Deco.Models
         [ForeignKey("CategoryId")]
         [ValidateNever]
         public Category Category { get; set; }
+
+        //One to many relation this way
         [ValidateNever]
-        public string ImageUrl { get; set; }
+        public List<ProductImage> ProductImages { get; set; }
     }
 }
