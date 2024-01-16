@@ -19,7 +19,18 @@ namespace Deco.DataAccess.Repository
 
         public void Update(Product obj)
         {
-            _db.Products.Update(obj);
+            //Configure updating properties
+            var objFromDb = _db.Products.FirstOrDefault(u => u.Id == obj.Id);
+            if (objFromDb != null)
+            {
+                objFromDb.Name = obj.Name;
+                objFromDb.Description = obj.Description;
+                objFromDb.CategoryId = obj.CategoryId;
+                objFromDb.Price = obj.Price;
+                objFromDb.SetPrice = obj.SetPrice;
+                //EF core automatically update ProductImage
+                objFromDb.ProductImages = obj.ProductImages;
+            }
         }
     }
 }

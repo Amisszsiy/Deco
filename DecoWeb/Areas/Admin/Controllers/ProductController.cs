@@ -47,46 +47,18 @@ namespace DecoWeb.Areas.Admin.Controllers
             else
             {
                 //Fetch corresponding product by id and go to edit form (create form with editing product's value)
-                productVM.Product = _unitOfWork.Product.Get(u => u.Id == id);
+                productVM.Product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "ProductImages");
                 return View(productVM);
             }
         }
 
         [HttpPost]
-        public IActionResult Upsert(ProductVM productVM, IFormFile? file)
+        public IActionResult Upsert(ProductVM productVM, List<IFormFile>? files)
         {
             if (ModelState.IsValid)
             {
-                string wwwRootPath = _webHostEnvironment.WebRootPath;
-                //If there is an uploaded file, save it to wwwroot/images/product
-                if(file != null)
-                {
-                    //Preparing saving path
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    string productPath = Path.Combine(wwwRootPath, @"images\product");
-
-                    //If there is a string of new uploaded file, delete old file in wwwroot
-                    //if(!string.IsNullOrEmpty(productVM.Product.ImageUrl))
-                    //{
-                    //    var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
-
-                    //    if(System.IO.File.Exists(oldImagePath))
-                    //    {
-                    //        System.IO.File.Delete(oldImagePath);
-                    //    }
-                    //}
-
-                    //using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
-                    //{
-                    //    file.CopyTo(fileStream);
-                    //}
-
-                    ////Save path to db
-                    //productVM.Product.ImageUrl = @"\images\product\" + fileName;
-                }
-
                 //Separate create or update handling logic
-                if(productVM.Product.Id == 0)
+                if (productVM.Product.Id == 0)
                 {
                     _unitOfWork.Product.Add(productVM.Product);
                 }
@@ -96,6 +68,51 @@ namespace DecoWeb.Areas.Admin.Controllers
                 }
 
                 _unitOfWork.Save();
+
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                //If there is an uploaded file, save it to wwwroot/images/product
+                if(files != null)
+                {
+
+                    foreach(IFormFile file in files)
+                    {
+                        //Preparing saving path
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        string productPath = @"images\products\product-" + productVM.Product.Id;
+                        string finalPath = Path.Combine(wwwRootPath, productPath);
+
+                        //Create folder for corresponding product image
+                        if (!Directory.Exists(finalPath))
+                        {
+                            Directory.CreateDirectory(finalPath);
+                        }
+
+                        //Save images to destination
+                        using (var fileStream = new FileStream(Path.Combine(finalPath, fileName), FileMode.Create))
+                        {
+                            file.CopyTo(fileStream);
+                        }
+
+                        //Set image url to new ProductImage obj
+                        ProductImage productImage = new()
+                        {
+                            ImageUrl = @"\" + productPath + @"\" + fileName,
+                            ProductId = productVM.Product.Id
+                        };
+
+                        //Instantiate ProductImages list obj for the first image
+                        if(productVM.Product.ProductImages == null)
+                        {
+                            productVM.Product.ProductImages = new List<ProductImage>();
+                        }
+
+                        productVM.Product.ProductImages.Add(productImage);
+                    }
+
+                    _unitOfWork.Product.Update(productVM.Product);
+                    _unitOfWork.Save();
+                }                
+                                
                 //Fix tempdata create and update later
                 TempData["success"] = "Product created successfully";
                 return RedirectToAction("Index");
@@ -109,6 +126,27 @@ namespace DecoWeb.Areas.Admin.Controllers
                 });
                 return View(productVM);
             }
+        }
+
+        public IActionResult DeleteImage(int imageId)
+        {
+            var deleteImage = _unitOfWork.ProductImage.Get(u => u.Id == imageId);
+            int productId = deleteImage.ProductId;
+            if(deleteImage != null)
+            {
+                if(!string.IsNullOrEmpty(deleteImage.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, deleteImage.ImageUrl.TrimStart('\\'));
+
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+                _unitOfWork.ProductImage.Remove(deleteImage);
+                _unitOfWork.Save();
+            }
+            return RedirectToAction(nameof(Upsert), new { id = productId });
         }
 
         #region API CALLS
@@ -127,12 +165,20 @@ namespace DecoWeb.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Error while deleting" });
             }
 
-            //var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, deleteProduct.ImageUrl.TrimStart('\\'));
+            string productPath = @"images\products\product-" + id;
+            string finalPath = Path.Combine(_webHostEnvironment.WebRootPath, productPath);
 
-            //if (System.IO.File.Exists(oldImagePath))
-            //{
-            //    System.IO.File.Delete(oldImagePath);
-            //}
+            if (Directory.Exists(finalPath))
+            {
+                //Get all file paths
+                string[] filePaths = Directory.GetFiles(finalPath);
+                //Iritate through and delete all image in folder along with folder
+                foreach(string filePath in filePaths)
+                {
+                    System.IO.File.Delete(filePath);
+                }
+                Directory.Delete(finalPath);
+            }
 
             _unitOfWork.Product.Remove(deleteProduct);
             _unitOfWork.Save();

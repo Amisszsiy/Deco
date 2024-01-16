@@ -22,7 +22,7 @@ namespace DecoWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> products = _unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
+            IEnumerable<Product> products = _unitOfWork.Product.GetAll(includeProperties: "Category,ProductImages").ToList();
             return View(products);
         }
 
@@ -30,7 +30,7 @@ namespace DecoWeb.Areas.Customer.Controllers
         {
             ShoppingCart shoppingCart = new()
             {
-                Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category"),
+                Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category,ProductImages"),
                 Count = 1,
                 ProductId = productId
             };

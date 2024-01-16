@@ -31,8 +31,11 @@ namespace DecoWeb.Areas.Customer.Controllers
                 ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
                 OrderHeader = new()
             };
+
+            IEnumerable<ProductImage> productImages = _unitOfWork.ProductImage.GetAll();
             foreach(var item in ShoppingCartVM.ShoppingCartList)
             {
+                item.Product.ProductImages = productImages.Where(u => u.ProductId == item.ProductId).ToList();
                 item.UnitPrice = GetPrice(item);
                 ShoppingCartVM.OrderHeader.OrderTotal += (item.UnitPrice * item.Count);
             }

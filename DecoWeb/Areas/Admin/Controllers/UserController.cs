@@ -15,12 +15,14 @@ namespace DecoWeb.Areas.Admin.Controllers
     [Authorize(Roles = SD.Role_Admin)]
     public class UserController  : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
-        public UserController(ApplicationDbContext db, UserManager<IdentityUser> userManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public UserController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
         public IActionResult Index()
         {
@@ -29,16 +31,15 @@ namespace DecoWeb.Areas.Admin.Controllers
 
         public IActionResult RoleManager(string userId)
         {
-            string RoleId = _db.UserRoles.FirstOrDefault(u => u.UserId == userId).RoleId;
             RoleManagerVM roleManagerVM = new RoleManagerVM()
             {
-                ApplicationUser = _db.ApplicationUsers.Include(u => u.Hotel).FirstOrDefault(u => u.Id == userId),
-                RoleList = _db.Roles.Select(i => new SelectListItem
+                ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId, includeProperties:"Hotel"),
+                RoleList = _roleManager.Roles.Select(i => new SelectListItem
                 {
                     Text = i.Name,
                     Value = i.Name
                 }),
-                HotelList = _db.Hotels.Select(i => new SelectListItem
+                HotelList = _unitOfWork.Hotel.GetAll().Select(i => new SelectListItem
                 {
                     Text = i.Name,
                     Value = i.Id.ToString()
@@ -46,7 +47,8 @@ namespace DecoWeb.Areas.Admin.Controllers
             };
 
             //Get role for user because it was not mapped in model
-            roleManagerVM.ApplicationUser.Role = _db.Roles.FirstOrDefault(u => u.Id == RoleId).Name;
+            roleManagerVM.ApplicationUser.Role = _userManager.GetRolesAsync(_unitOfWork.ApplicationUser
+                .Get(u => u.Id == userId)).GetAwaiter().GetResult().FirstOrDefault();
 
             return View(roleManagerVM);
         }
@@ -54,14 +56,14 @@ namespace DecoWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult RoleManager(RoleManagerVM roleManagerVM)
         {
-            string roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == roleManagerVM.ApplicationUser.Id).RoleId;
-            string oldRole = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+            string oldRole = _userManager.GetRolesAsync(_unitOfWork.ApplicationUser
+                .Get(u => u.Id == roleManagerVM.ApplicationUser.Id)).GetAwaiter().GetResult().FirstOrDefault();
+
+            ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == roleManagerVM.ApplicationUser.Id);
 
             //If new role is selected
-            if(!(roleManagerVM.ApplicationUser.Role == oldRole))
+            if (!(roleManagerVM.ApplicationUser.Role == oldRole))
             {
-                //Get EF core tracked user
-                ApplicationUser applicationUser = _db.ApplicationUsers.FirstOrDefault(u => u.Id == roleManagerVM.ApplicationUser.Id);
                 if(roleManagerVM.ApplicationUser.Role == SD.Role_Hotel)
                 {
                     applicationUser.HotelId = roleManagerVM.ApplicationUser.HotelId;
@@ -71,11 +73,23 @@ namespace DecoWeb.Areas.Admin.Controllers
                     applicationUser.HotelId = null;
                 }
 
-                _db.SaveChanges();
+                _unitOfWork.ApplicationUser.Update(applicationUser);
+                _unitOfWork.Save();
 
                 _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
                 _userManager.AddToRoleAsync(applicationUser, roleManagerVM.ApplicationUser.Role).GetAwaiter().GetResult();
             }
+            else
+            {
+                //If change only hotel
+                if(oldRole == SD.Role_Hotel && applicationUser.HotelId != roleManagerVM.ApplicationUser.HotelId)
+                {
+                    applicationUser.HotelId = roleManagerVM.ApplicationUser.HotelId;
+                    _unitOfWork.ApplicationUser.Update(applicationUser);
+                    _unitOfWork.Save();
+                }
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -83,22 +97,13 @@ namespace DecoWeb.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<ApplicationUser> userList = _db.ApplicationUsers.Include(u => u.Hotel).ToList();
-
-            var userRoles = _db.UserRoles.ToList();
-            var roles = _db.Roles.ToList();
+            List<ApplicationUser> userList = _unitOfWork.ApplicationUser.GetAll(includeProperties:"Hotel").ToList();
 
             //Set hotel name to empty string for regular user so that they will be shown in view via dataTable.
             foreach(var user in userList)
             {
-                //Map user to role name
-                var roleId = userRoles.FirstOrDefault(u => u.UserId == user.Id);
                 //Assuming all users have role in production
-                user.Role = roles.FirstOrDefault(u => u.Id == roleId.RoleId).Name;
-                //if (roleId != null)
-                //{
-                //    user.Role = roles.FirstOrDefault(u => u.Id == roleId.RoleId).Name;
-                //}
+                user.Role = _userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault();
 
                 if(user.Hotel == null)
                 {
@@ -110,11 +115,6 @@ namespace DecoWeb.Areas.Admin.Controllers
             }
 
             return Json(new {data = userList});
-        }
-        [HttpDelete]
-        public IActionResult Delete(int? id)
-        {
-            return Json(new { success = true, message = "Deleted successfully" });
         }
         #endregion
     }
