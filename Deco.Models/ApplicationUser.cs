@@ -23,6 +23,9 @@ namespace Deco.Models
         public int? HotelId { get; set; }
         [ForeignKey("HotelId")]
         [ValidateNever]
-        public Hotel Hotel { get; set; }
+        public Hotel? Hotel { get; set; }
+
+        [NotMapped]
+        public string Role {  get; set; }
     }
 }
