@@ -33,12 +33,18 @@ namespace Deco.DataAccess.Migrations
                     b.Property<int>("AdsTypeId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<int>("SortNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -75,6 +81,22 @@ namespace Deco.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AdsType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Top Carousel",
+                            SizeHeight = 600,
+                            SizeWidth = 1200
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Rectangle Ads",
+                            SizeHeight = 300,
+                            SizeWidth = 300
+                        });
                 });
 
             modelBuilder.Entity("Deco.Models.Category", b =>
@@ -666,7 +688,7 @@ namespace Deco.DataAccess.Migrations
             modelBuilder.Entity("Deco.Models.AdsImage", b =>
                 {
                     b.HasOne("Deco.Models.AdsType", "AdsType")
-                        .WithMany("AdsImages")
+                        .WithMany()
                         .HasForeignKey("AdsTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -803,11 +825,6 @@ namespace Deco.DataAccess.Migrations
                         .HasForeignKey("HotelId");
 
                     b.Navigation("Hotel");
-                });
-
-            modelBuilder.Entity("Deco.Models.AdsType", b =>
-                {
-                    b.Navigation("AdsImages");
                 });
 
             modelBuilder.Entity("Deco.Models.Product", b =>

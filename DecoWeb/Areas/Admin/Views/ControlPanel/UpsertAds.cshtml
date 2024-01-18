@@ -1,6 +1,6 @@
 ﻿@model AdsImageVM
 
-<div class="card shadow border-0 my-4">
+<div class="card shadow border-0 my-4 mb-5 pb-5">
     <div class="card-header bg-dark bg-gradient ml-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
@@ -13,6 +13,7 @@
     <div class="card-body p-4">
         <form method="post" class="row" enctype="multipart/form-data">
             <input asp-for="AdsImage.Id" hidden />
+            <input asp-for="AdsImage.ImageUrl" hidden/>
             <div class="row">
                 <div class="col-12">
                     <div class="border p-3">
@@ -20,6 +21,11 @@
                             <input asp-for="AdsImage.Title" class="form-control border-0 shadow" />
                             <label asp-for="AdsImage.Title" class="ms-2"></label>
                             <span asp-validation-for="AdsImage.Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="AdsImage.Description" class="form-control border-0 shadow" />
+                            <label asp-for="AdsImage.Description" class="ms-2"></label>
+                            <span asp-validation-for="AdsImage.Description" class="text-danger"></span>
                         </div>
                         <div class="form-floating py-2 col-12">
                             <select asp-for="AdsImage.AdsTypeId" asp-items="@Model.AdsTypeList" class="form-select border-0 shadow">
@@ -33,11 +39,16 @@
                             <label asp-for="AdsImage.Url" class="ms-2"></label>
                             <span asp-validation-for="AdsImage.Url" class="text-danger"></span>
                         </div>
-                        <div class="form-floating py-2 col-12">
+                        <div class="form-floating py-2 col-6">
                             <div class="form-check form-switch">
                                 <input asp-for="AdsImage.IsActive" class="form-check-input" type="checkbox">
                                 <label class="ms-2 text-muted" for="AdsImage_IsActive">Enable Ads</label>
                             </div>
+                        </div>
+                        <div class="form-floating py-2 col-6">
+                            <input asp-for="AdsImage.SortNumber" class="form-control border-0 shadow" />
+                            <label asp-for="AdsImage.SortNumber" class="ms-2"></label>
+                            <span asp-validation-for="AdsImage.SortNumber" class="text-danger"></span>
                         </div>
                         <div class="form-floating py-2 col-12">
                             <input type="file" name="file" class="form-control border-0 shadow" />
@@ -68,9 +79,6 @@
                     {
                         <div class="border p-1 m-2 text-center">
                             <img src="@Model.AdsImage.ImageUrl" width="100%" style="border-radius:5px; border:1px solid #bbb9b9;" />
-                            <a asp-action="DeleteImage" class="btn btn-danger" asp-route-imageId="@Model.AdsImage.Id">
-                                <i class="bi bi-trash-fill"></i> Delete
-                            </a>
                         </div>
                     }
                 </div>

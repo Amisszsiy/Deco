@@ -9,6 +9,7 @@ namespace Deco.Models.ViewModels
     public class HomeVM
     {
         public IEnumerable<Product> Products { get; set; }
-        public IEnumerable<AdsImage> AdsImages { get; set; }
+        public IEnumerable<AdsImage> TopAdsImages { get; set; }
+        public IEnumerable<AdsImage> SideAdsImages { get; set; }
     }
 }

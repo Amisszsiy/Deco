@@ -15,8 +15,5 @@ namespace Deco.Models
         public string Name { get; set; }
         public int? SizeWidth { get; set; }
         public int? SizeHeight { get; set;}
-
-        [ValidateNever]
-        public List<AdsImage> AdsImages { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using Deco.DataAccess.Repository.IRepository;
 using Deco.Models;
+using Deco.Models.ViewModels;
 using Deco.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,8 +23,19 @@ namespace DecoWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> products = _unitOfWork.Product.GetAll(includeProperties: "Category,ProductImages").ToList();
-            return View(products);
+            HomeVM homeVM = new()
+            {
+                Products = _unitOfWork.Product.GetAll(includeProperties: "Category,ProductImages").ToList(),
+
+                TopAdsImages = _unitOfWork.AdsImage.GetAll(includeProperties: "AdsType")
+                .Where(u => u.AdsTypeId == 1).Where(u => u.IsActive)
+                .OrderBy(u => u.SortNumber).ToList(),
+
+                SideAdsImages = _unitOfWork.AdsImage.GetAll(includeProperties: "AdsType")
+                .Where(u => u.AdsTypeId == 2).Where(u => u.IsActive)
+                .OrderBy(u => u.SortNumber).ToList()
+            };
+            return View(homeVM);
         }
 
         public IActionResult ProductDetails(int productId)

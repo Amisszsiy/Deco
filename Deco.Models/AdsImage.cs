@@ -17,6 +17,8 @@ namespace Deco.Models
         [DisplayName("Ads link")]
         public string Url { get; set; }
         public string? Title { get; set; }
+        public string? Description { get; set; }
+        public int SortNumber { get; set; }
         public bool IsActive { get; set; }
         public int AdsTypeId { get; set; }
         [ForeignKey("AdsTypeId")]

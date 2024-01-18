@@ -47,6 +47,10 @@ namespace Deco.DataAccess.Data
                 new Hotel { Id = 1, Name = "Mariatt", StreetAddress = "19/1 LakeVille South Wesley 5 Rd.", City = "Burkley", Province = "Iowa", PostalCode = "544-765", PhoneNumber = "522-488-1245" },
                 new Hotel { Id = 2, Name = "Grande", StreetAddress = "5 SpringFiled GoldenCrown 8 Rd.", City = "Weiling", Province = "Toronto", PostalCode = "125-987", PhoneNumber = "134-570-5701" }
                 );
+
+            modelBuilder.Entity<AdsType>().HasData(
+                new AdsType { Id = 1, Name = "Top Carousel", SizeWidth = 1200, SizeHeight = 600 },
+                new AdsType { Id = 2, Name = "Rectangle Ads", SizeWidth = 300, SizeHeight = 300 });
         }
     }
 }

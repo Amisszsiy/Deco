@@ -149,7 +149,7 @@ namespace DecoWeb.Areas.Customer.Controllers
                         {
                             //Shifting decimal point by 2.
                             UnitAmount = (long)(item.UnitPrice * 100),
-                            Currency = "usd",
+                            Currency = "thb",
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
                                 Name = item.Product.Name
