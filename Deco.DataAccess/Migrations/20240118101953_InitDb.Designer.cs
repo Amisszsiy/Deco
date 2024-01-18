@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Deco.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240113164942_FixOrderHeaderPropTypo")]
-    partial class FixOrderHeaderPropTypo
+    [Migration("20240118101953_InitDb")]
+    partial class InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,29 @@ namespace Deco.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Deco.Models.AdsType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SizeHeight")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SizeWidth")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdsType");
+                });
 
             modelBuilder.Entity("Deco.Models.Category", b =>
                 {
@@ -249,10 +272,6 @@ namespace Deco.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -276,7 +295,6 @@ namespace Deco.DataAccess.Migrations
                             Id = 1,
                             CategoryId = 1,
                             Description = "Drawn by Van Goh",
-                            ImageUrl = "",
                             Name = "Stary Night",
                             Price = 55000.0,
                             SetPrice = 45000.0
@@ -286,7 +304,6 @@ namespace Deco.DataAccess.Migrations
                             Id = 2,
                             CategoryId = 1,
                             Description = "Famous screaming person",
-                            ImageUrl = "",
                             Name = "Scream",
                             Price = 65000.0,
                             SetPrice = 55000.0
@@ -296,7 +313,6 @@ namespace Deco.DataAccess.Migrations
                             Id = 3,
                             CategoryId = 2,
                             Description = "Fox fur carpet 8*5M",
-                            ImageUrl = "",
                             Name = "Fox fur 8*5",
                             Price = 3500.0,
                             SetPrice = 3000.0
@@ -306,7 +322,6 @@ namespace Deco.DataAccess.Migrations
                             Id = 4,
                             CategoryId = 2,
                             Description = "Bear fur carpet 9*10M",
-                            ImageUrl = "",
                             Name = "Bear fur 9*10",
                             Price = 5000.0,
                             SetPrice = 4000.0
@@ -316,7 +331,6 @@ namespace Deco.DataAccess.Migrations
                             Id = 5,
                             CategoryId = 3,
                             Description = "White Cabinet 170*40*70",
-                            ImageUrl = "",
                             Name = "Tall White Cab170",
                             Price = 6000.0,
                             SetPrice = 5000.0
@@ -326,11 +340,32 @@ namespace Deco.DataAccess.Migrations
                             Id = 6,
                             CategoryId = 3,
                             Description = "Dark Cabinet 45*40*70",
-                            ImageUrl = "",
                             Name = "Short Dark Cab45",
                             Price = 2000.0,
                             SetPrice = 1000.0
                         });
+                });
+
+            modelBuilder.Entity("Deco.Models.ProductImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImages");
                 });
 
             modelBuilder.Entity("Deco.Models.ShoppingCart", b =>
@@ -640,6 +675,17 @@ namespace Deco.DataAccess.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("Deco.Models.ProductImage", b =>
+                {
+                    b.HasOne("Deco.Models.Product", "Product")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Deco.Models.ShoppingCart", b =>
                 {
                     b.HasOne("Deco.Models.ApplicationUser", "ApplicationUser")
@@ -717,6 +763,11 @@ namespace Deco.DataAccess.Migrations
                         .HasForeignKey("HotelId");
 
                     b.Navigation("Hotel");
+                });
+
+            modelBuilder.Entity("Deco.Models.Product", b =>
+                {
+                    b.Navigation("ProductImages");
                 });
 #pragma warning restore 612, 618
         }

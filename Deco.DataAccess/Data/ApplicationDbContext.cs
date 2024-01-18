@@ -21,6 +21,8 @@ namespace Deco.DataAccess.Data
 
         public DbSet<OrderHeader> OrderHeaders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<AdsType> AdsType { get; set; }
+        public DbSet<AdsImage> AdsImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

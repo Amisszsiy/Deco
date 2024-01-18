@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Deco.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240112092806_SeedHotels")]
-    partial class SeedHotels
+    [Migration("20240118112118_AddAdsImageTable")]
+    partial class AddAdsImageTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,61 @@ namespace Deco.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Deco.Models.AdsImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdsTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdsTypeId");
+
+                    b.ToTable("AdsImages");
+                });
+
+            modelBuilder.Entity("Deco.Models.AdsType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SizeHeight")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SizeWidth")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdsType");
+                });
 
             modelBuilder.Entity("Deco.Models.Category", b =>
                 {
@@ -125,6 +180,115 @@ namespace Deco.DataAccess.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Deco.Models.OrderDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderHeaderId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("OrderedPrice")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderHeaderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("Deco.Models.OrderHeader", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Carrier")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OrderStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("OrderTotal")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateOnly>("PaymentDueDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("PaymentIntentId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SessionId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ShippingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("StreetAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackingNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("OrderHeaders");
+                });
+
             modelBuilder.Entity("Deco.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -137,10 +301,6 @@ namespace Deco.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -167,7 +327,6 @@ namespace Deco.DataAccess.Migrations
                             Id = 1,
                             CategoryId = 1,
                             Description = "Drawn by Van Goh",
-                            ImageUrl = "",
                             Name = "Stary Night",
                             Price = 55000.0,
                             SetPrice = 45000.0
@@ -177,7 +336,6 @@ namespace Deco.DataAccess.Migrations
                             Id = 2,
                             CategoryId = 1,
                             Description = "Famous screaming person",
-                            ImageUrl = "",
                             Name = "Scream",
                             Price = 65000.0,
                             SetPrice = 55000.0
@@ -187,7 +345,6 @@ namespace Deco.DataAccess.Migrations
                             Id = 3,
                             CategoryId = 2,
                             Description = "Fox fur carpet 8*5M",
-                            ImageUrl = "",
                             Name = "Fox fur 8*5",
                             Price = 3500.0,
                             SetPrice = 3000.0
@@ -197,7 +354,6 @@ namespace Deco.DataAccess.Migrations
                             Id = 4,
                             CategoryId = 2,
                             Description = "Bear fur carpet 9*10M",
-                            ImageUrl = "",
                             Name = "Bear fur 9*10",
                             Price = 5000.0,
                             SetPrice = 4000.0
@@ -207,7 +363,6 @@ namespace Deco.DataAccess.Migrations
                             Id = 5,
                             CategoryId = 3,
                             Description = "White Cabinet 170*40*70",
-                            ImageUrl = "",
                             Name = "Tall White Cab170",
                             Price = 6000.0,
                             SetPrice = 5000.0
@@ -217,11 +372,59 @@ namespace Deco.DataAccess.Migrations
                             Id = 6,
                             CategoryId = 3,
                             Description = "Dark Cabinet 45*40*70",
-                            ImageUrl = "",
                             Name = "Short Dark Cab45",
                             Price = 2000.0,
                             SetPrice = 1000.0
                         });
+                });
+
+            modelBuilder.Entity("Deco.Models.ProductImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImages");
+                });
+
+            modelBuilder.Entity("Deco.Models.ShoppingCart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -442,6 +645,9 @@ namespace Deco.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("HotelId")
+                        .HasColumnType("int");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -455,7 +661,50 @@ namespace Deco.DataAccess.Migrations
                     b.Property<string>("StreetAddress")
                         .HasColumnType("nvarchar(max)");
 
+                    b.HasIndex("HotelId");
+
                     b.HasDiscriminator().HasValue("ApplicationUser");
+                });
+
+            modelBuilder.Entity("Deco.Models.AdsImage", b =>
+                {
+                    b.HasOne("Deco.Models.AdsType", "AdsType")
+                        .WithMany("AdsImages")
+                        .HasForeignKey("AdsTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AdsType");
+                });
+
+            modelBuilder.Entity("Deco.Models.OrderDetail", b =>
+                {
+                    b.HasOne("Deco.Models.OrderHeader", "OrderHeader")
+                        .WithMany()
+                        .HasForeignKey("OrderHeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Deco.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderHeader");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Deco.Models.OrderHeader", b =>
+                {
+                    b.HasOne("Deco.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Deco.Models.Product", b =>
@@ -467,6 +716,36 @@ namespace Deco.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Deco.Models.ProductImage", b =>
+                {
+                    b.HasOne("Deco.Models.Product", "Product")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Deco.Models.ShoppingCart", b =>
+                {
+                    b.HasOne("Deco.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Deco.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -518,6 +797,25 @@ namespace Deco.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Deco.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("Deco.Models.Hotel", "Hotel")
+                        .WithMany()
+                        .HasForeignKey("HotelId");
+
+                    b.Navigation("Hotel");
+                });
+
+            modelBuilder.Entity("Deco.Models.AdsType", b =>
+                {
+                    b.Navigation("AdsImages");
+                });
+
+            modelBuilder.Entity("Deco.Models.Product", b =>
+                {
+                    b.Navigation("ProductImages");
                 });
 #pragma warning restore 612, 618
         }

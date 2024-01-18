@@ -16,6 +16,8 @@ namespace Deco.DataAccess.Repository.IRepository
         public IOrderHeaderRepository OrderHeader { get; }
         public IOrderDetailRepository OrderDetail { get; }
         public IProductImageRepository ProductImage { get; }
+        public IAdsTypeRepository AdsType { get; }
+        public IAdsImageRepository AdsImage { get; }
         void Save();
     }
 }
