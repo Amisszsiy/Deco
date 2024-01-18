@@ -102,14 +102,14 @@
 											<h6 class="my-0">@item.Product.Name</h6>
 											<small class="text-muted">Quantity: @item.Count</small>
 										</div>
-										<span class="text-muted">@((item.UnitPrice*item.Count).ToString("c"))</span>
+										<span class="text-muted">@((item.UnitPrice * item.Count).ToString("c", new CultureInfo("th-TH")))</span>
 									</li>
 								}
 
 
 								<li class="list-group-item d-flex justify-content-between bg-light">
 									<small class="text-info">Total (USD)</small>
-									<strong class="text-info">@Model.OrderHeader.OrderTotal.ToString("c")</strong>
+									<strong class="text-info">@Model.OrderHeader.OrderTotal.ToString("c", new CultureInfo("th-TH"))</strong>
 								</li>
 							</ul>
 						</div>

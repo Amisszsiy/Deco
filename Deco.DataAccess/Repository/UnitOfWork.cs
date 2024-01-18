@@ -19,6 +19,8 @@ namespace Deco.DataAccess.Repository
         public IOrderHeaderRepository OrderHeader { get; private set; }
         public IOrderDetailRepository OrderDetail { get; private set; }
         public IProductImageRepository ProductImage { get; private set; }
+        public IAdsTypeRepository AdsType { get; private set; }
+        public IAdsImageRepository AdsImage { get; private set; }
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
@@ -30,6 +32,8 @@ namespace Deco.DataAccess.Repository
             OrderHeader = new OrderHeaderRepository(_db);
             OrderDetail = new OrderDetailRepository(_db);
             ProductImage = new ProductImageRepository(_db);
+            AdsType = new AdsTypeRepository(_db);
+            AdsImage = new AdsImageRepository(_db);
         }
 
         public void Save()

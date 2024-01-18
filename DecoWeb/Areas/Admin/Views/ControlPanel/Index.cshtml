@@ -1,0 +1,121 @@
+﻿@model ControlPanelVM
+
+<div class="row mb-3">
+    <div class="col-12 mb-3">
+        <div class="card shadow border-0 my-4">
+            <div class="card-header bg-dark bg-gradient ml-0 py-3">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h2 class="text-white py-2">
+                            Advertisment Type List
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="row pb-3">
+                    <div class="col-6"></div>
+                    <div class="col-6 text-end">
+                        <a asp-controller="ControlPanel" asp-action="UpsertType" class="btn btn-dark">
+                            <i class="bi bi-plus-square"></i> Createa type
+                        </a>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Height</th>
+                            <th>Width</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.AdsType != null && Model.AdsType.Count() > 0)
+                        {
+                            @foreach (var obj in Model.AdsType)
+                            {
+                                <tr>
+                                    <td>@obj.Name</td>
+                                    <td>@obj.SizeHeight</td>
+                                    <td>@obj.SizeWidth</td>
+                                    <td>
+                                        <div class="w-75 btn-group" role="group">
+                                            <a asp-controller="ControlPanel" asp-action="UpsertType" asp-route-id="@obj.Id" class="btn btn-dark mx-2">
+                                                <i class="bi bi-pencil-square"></i> Edit
+                                            </a>
+                                            <a asp-controller="ControlPanel" asp-action="DeleteType" asp-route-id="@obj.Id" class="btn btn-danger mx-2">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mb-3">
+        <div class="card shadow border-0 my-4">
+            <div class="card-header bg-dark bg-gradient ml-0 py-3">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h2 class="text-white py-2">
+                            Advertisment List
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="row pb-3">
+                    <div class="col-6"></div>
+                    <div class="col-6 text-end">
+                        <a asp-controller="ControlPanel" asp-action="UpsertAds" class="btn btn-dark">
+                            <i class="bi bi-plus-square"></i> Createa Ads
+                        </a>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Ads Title</th>
+                            <th>AdsType</th>
+                            <th>Url</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.AdsImages != null && Model.AdsImages.Count() > 0)
+                        {
+                            @foreach (var obj in Model.AdsImages)
+                            {
+                                <tr>
+                                    <td>@obj.Title</td>
+                                    <td>@obj.AdsType.Name</td>
+                                    <td>@obj.Url</td>
+                                    <td>
+                                        <img src="@obj.ImageUrl" width="200px"/>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <div class="w-75 btn-group" role="group">
+                                            <a asp-controller="ControlPanel" asp-action="UpsertAds" asp-route-id="@obj.Id" class="btn btn-dark mx-2">
+                                                <i class="bi bi-pencil-square"></i> Edit
+                                            </a>
+                                            <a asp-controller="ControlPanel" asp-action="DeleteAds" asp-route-id="@obj.Id" class="btn btn-danger mx-2">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

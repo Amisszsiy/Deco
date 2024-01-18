@@ -63,7 +63,7 @@
                             <h6 class="text-dark text-opacity-50  pb-2">
                                 Standalone Price:
                                 <span class="text-decoration-line-through">
-                                    @Model.Product.Price.ToString("c")
+                                    @Model.Product.Price.ToString("c", new CultureInfo("th-TH"))
                                 </span>
                             </h6>
                         </div>
@@ -83,10 +83,10 @@
                                 <div>Price</div>
                             </div>
                             <div class="p-1 col-4 col-lg-3 bg-white text-warning fw-bold">
-                                <div>@Model.Product.Price.ToString("c")</div>
+                                <div>@Model.Product.Price.ToString("c", new CultureInfo("th-TH"))</div>
                             </div>
                             <div class="p-1 col-4 col-lg-3 bg-white text-warning fw-bold">
-                                <div>@Model.Product.SetPrice.ToString("c")</div>
+                                <div>@Model.Product.SetPrice.ToString("c", new CultureInfo("th-TH"))</div>
                             </div>
                         </div>
                         <div class="row pl-2 my-3">

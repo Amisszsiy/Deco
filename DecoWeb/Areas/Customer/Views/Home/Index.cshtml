@@ -1,52 +1,106 @@
-﻿@model IEnumerable<Product>
+﻿@model HomeVM
+<div class="row">
+    <div class="col-12">
+        <div class="row mb-4">
+            @if(Model.TopAdsImages != null && Model.TopAdsImages.Count() > 0)
+            {
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
 
-<div class="row pb-3 my-4">
-    @foreach(var product in Model)
-    {
-        <div class="col-lg-3 col-sm-6">
-            <div class="row p-2">
-                <div class="col-12 p-1">
-                    <div class="card border-0 p-3 shadow border-top border-5 rounded">
-                        <!--Add logic if no image display no image instead later-->
-                        <div class="pl-1 pb-2">
-                            <h6 class="text-dark opacity-75 text-center mb-0">
-                                @product.Name
-                            </h6>
-                        </div>
-                        @if(product.ProductImages!=null && product.ProductImages.Count() > 0)
+                        @foreach (var image in Model.TopAdsImages.Select((image, index) => new { Image = image, Index = index }))
                         {
-                            <img src="@product.ProductImages.FirstOrDefault().ImageUrl" class="card-img-top rounded" />
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@image.Index"
+                                    class="@(image.Index == 0 ? "active":"")" aria-current="true" aria-label="Slide 1"></button>
                         }
-                        else
+                    </div>
+                    <div class="carousel-inner">
+                        @foreach (var image in Model.TopAdsImages.Select((image, index) => new { Image = image, Index = index }))
                         {
-                            <img src="~/images/placeholder_image.jpg" class="card-img-top rounded" />
+                            <div class="@(image.Index == 0 ? "carousel-item active":"carousel-item")">
+                                <img src="@image.Image.ImageUrl" class="d-block w-100" alt="">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>@image.Image.Title</h5>
+                                    <p>@image.Image.Description</p>
+                                </div>
+                            </div>
                         }
-                        <div class="card-body pb-0">
-                            <div class="pl-1">
-                                <p class="card-title h5 text-dark opacity-75 text-uppercase text-center"></p>
-                                <p class="card-title text-warning text-center"></p>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-9">
+        <div class="row pb-3 my-4">
+            @foreach (var product in Model.Products)
+            {
+                <div class="col-lg-3 col-sm-6">
+                    <div class="row p-2">
+                        <div class="col-12 p-1">
+                            <div class="card border-0 p-3 shadow border-top border-5 rounded">
+                                <!--Add logic if no image display no image instead later-->
+                                <div class="pl-1 pb-2">
+                                    <h6 class="text-dark opacity-75 text-center mb-0">
+                                        @product.Name
+                                    </h6>
+                                </div>
+                                @if (product.ProductImages != null && product.ProductImages.Count() > 0)
+                                {
+                                    <img src="@product.ProductImages.FirstOrDefault().ImageUrl" class="card-img-top rounded" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/placeholder_image.jpg" class="card-img-top rounded" />
+                                }
+                                <div class="card-body pb-0">
+                                    <div class="pl-1">
+                                        <p class="card-title h5 text-dark opacity-75 text-uppercase text-center"></p>
+                                        <p class="card-title text-warning text-center"></p>
+                                    </div>
+                                    <div class="pl-1">
+                                        <p class="text-dark opacity-75 text-center mb-0">
+                                            Price:
+                                            <span class="text-decoration-line-through">@product.Price.ToString("c", new CultureInfo("th-TH"))</span>
+                                        </p>
+                                    </div>
+                                    <div class="pl-1">
+                                        <p class="text-dark opacity-75 text-center">
+                                            Price for set:
+                                            <span class="text-success">@product.SetPrice.ToString("c", new CultureInfo("th-TH"))</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a asp-action="ProductDetails" asp-route-productId="@product.Id" class="btn btn-primary bg-gradient border-0 form-control">
+                                        Detail
+                                    </a>
+                                </div>
                             </div>
-                            <div class="pl-1">
-                                <p class="text-dark opacity-75 text-center mb-0">
-                                    Price: 
-                                    <span class="text-decoration-line-through">@product.Price.ToString("c")</span>
-                                </p>
-                            </div>
-                            <div class="pl-1">
-                                <p class="text-dark opacity-75 text-center">
-                                    Price for set: 
-                                    <span class="text-success">@product.SetPrice.ToString("c")</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div>
-                            <a asp-action="ProductDetails" asp-route-productId="@product.Id" class="btn btn-primary bg-gradient border-0 form-control">
-                                Detail
-                            </a>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
-    }
+    </div>
+    <div class="col-3 pt-3">
+        @if (Model.SideAdsImages != null && Model.TopAdsImages.Count() > 0)
+        {
+            @foreach(var image in Model.SideAdsImages)
+            {
+                <div class="mb-3 p-2">
+                    <img src="@image.ImageUrl" width="100%" />
+                </div>
+            }
+        }
+    </div>
 </div>
+
+
+
